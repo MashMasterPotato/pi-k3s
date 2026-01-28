@@ -35,6 +35,7 @@ Its role is **coordination**, not configuration management.
 
 ## Repository Structure
 
+```text
 .
 ├── tofu/
 │   ├── main.tf
