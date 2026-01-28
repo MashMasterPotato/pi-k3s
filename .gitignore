@@ -1,0 +1,17 @@
+# OpenTofu / Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+
+# Ansible generated inventory
+ansible/inventory.ini
+
+# Kubernetes configs
+.kube/
+*.kubeconfig
+
+# Editor / OS noise
+.vscode/
+.DS_Store
+
