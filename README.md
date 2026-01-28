@@ -1,40 +1,39 @@
-#Raspberry Pi k3s — OpenTofu + Ansible
+# Raspberry Pi k3s — OpenTofu + Ansible
 
-This repository provisions a single-node k3s Kubernetes cluster on a Raspberry Pi 5 using a clean, repeatable Infrastructure-as-Code workflow.
+This repository provisions a **single-node k3s Kubernetes cluster** on a **Raspberry Pi 5** using a clean, repeatable **Infrastructure-as-Code** workflow.
 
-It demonstrates how to combine OpenTofu and Ansible in a way that reflects real-world DevOps / Platform Engineering practices, even on bare metal:
-	•	Raspberry Pi Imager for minimal, one-time bootstrapping
-	•	OpenTofu as the orchestration and source-of-truth layer
-	•	Ansible for deterministic system configuration
+It demonstrates how to combine **OpenTofu** and **Ansible** in a way that reflects real-world **DevOps / Platform Engineering** practices, even on bare metal:
 
-The goal is a setup that is simple, reproducible, and easy to reason about, rather than over-engineered.
+- **Raspberry Pi Imager** for minimal, one-time bootstrapping
+- **OpenTofu** as the orchestration and source-of-truth layer
+- **Ansible** for deterministic system configuration
 
-⸻
+The goal is a setup that is **simple, reproducible, and easy to reason about**, rather than over-engineered.
 
-Architecture
+---
 
-Raspberry Pi Imager
-        │
-        ▼
- Basic OS + SSH access
-        │
-        ▼
-OpenTofu
-  - stores host variables
-  - generates Ansible inventory
-  - triggers provisioning
-        │
-        ▼
-Ansible
-  - OS preparation
-  - k3s installation
-  - Kubernetes ready
+## Architecture
 
-OpenTofu is intentionally not used for OS configuration. Its role is coordination, not configuration management.
+Raspberry Pi Imager  
+↓  
+Basic OS + SSH access  
+↓  
+OpenTofu  
+- stores host variables  
+- generates Ansible inventory  
+- triggers provisioning  
+↓  
+Ansible  
+- OS preparation  
+- k3s installation  
+- Kubernetes ready  
 
-⸻
+OpenTofu is intentionally **not** used for OS configuration.  
+Its role is **coordination**, not configuration management.
 
-Repository Structure
+---
+
+## Repository Structure
 
 .
 ├── tofu/
@@ -50,105 +49,107 @@ Repository Structure
 │
 └── README.md
 
+---
 
-⸻
+## Prerequisites
 
-Prerequisites
+### Local machine
+- OpenTofu ≥ 1.6
+- Ansible ≥ 2.15
+- SSH client
+- kubectl
 
-Local machine
-	•	OpenTofu ≥ 1.6
-	•	Ansible ≥ 2.15
-	•	SSH client
-	•	kubectl
+### Raspberry Pi
+- Raspberry Pi 5
+- Raspberry Pi OS 64-bit (Lite recommended)
+- Stable IP address (DHCP reservation recommended)
 
-Raspberry Pi
-	•	Raspberry Pi 5
-	•	Raspberry Pi OS 64-bit (Lite recommended)
-	•	Stable IP address (DHCP reservation recommended)
+---
 
-⸻
+## Initial Raspberry Pi Setup
 
-Initial Raspberry Pi Setup
+Use **Raspberry Pi Imager** for the initial setup:
 
-Use Raspberry Pi Imager for the initial setup:
-	•	Set hostname (e.g. pi-k3s)
-	•	Enable SSH (prefer public key authentication)
-	•	Create a user account
-	•	Configure networking
-	•	Set locale and timezone
+- Set hostname (e.g. `pi-k3s`)
+- Enable SSH (prefer public key authentication)
+- Create a user account
+- Configure networking
+- Set locale and timezone
 
 After first boot, verify SSH access:
 
-ssh <user>@<pi-ip>
+ssh `<user>`@`<pi-ip>`
 
+---
 
-⸻
-
-Configuration
+## Configuration
 
 OpenTofu requires only minimal input:
-	•	pi_host — IP address of the Raspberry Pi
-	•	pi_user — SSH user created during imaging
 
-⸻
+- `pi_host` — IP address of the Raspberry Pi
+- `pi_user` — SSH user created during imaging
 
-Provisioning
+---
+
+## Provisioning
 
 Run from the repository root:
 
 cd tofu
 tofu init
 tofu apply \
-  -var="pi_host=192.168.1.50" \
-  -var="pi_user=marcel"
+  -var="pi_host=some-ip" \
+  -var="pi_user=some-user"
 
 This will:
-	1.	Generate the Ansible inventory
-	2.	Connect to the Raspberry Pi via SSH
-	3.	Install and start k3s
 
-⸻
+1. Generate the Ansible inventory
+2. Connect to the Raspberry Pi via SSH
+3. Install and start k3s
 
-Accessing the Cluster
+---
 
-On the Raspberry Pi
+## Accessing the Cluster
+
+### On the Raspberry Pi
 
 kubectl get nodes
 
-From a local machine
+### From a local machine
 
 Copy the kubeconfig:
 
-scp <user>@<pi-ip>:/etc/rancher/k3s/k3s.yaml ~/.kube/pi-k3s.yaml
+scp some-user@some-ip:/etc/rancher/k3s/k3s.yaml ~/.kube/pi-k3s.yaml
 
 Update the server address in the file:
 
-server: https://<pi-ip>:6443
+server: https://some-ip:6443
 
 Then run:
 
 KUBECONFIG=~/.kube/pi-k3s.yaml kubectl get nodes
 
+---
 
-⸻
+## Design Principles
 
-Design Principles
-	•	Single-node k3s for simplicity and low resource usage
-	•	Clear separation of concerns between orchestration and configuration
-	•	Local-first infrastructure, no cloud dependencies
-	•	Production-inspired patterns applied to real hardware
+- **Single-node k3s** for simplicity and low resource usage
+- **Clear separation of concerns** between orchestration and configuration
+- **Local-first infrastructure**, no cloud dependencies
+- **Production-inspired patterns** applied to real hardware
 
-⸻
+---
 
-Future Improvements
-	•	Convert tasks into reusable Ansible roles
-	•	Add MetalLB for LoadBalancer services
-	•	Add Ingress (Traefik or NGINX)
-	•	Optional GitOps tooling (Argo CD / Flux)
-	•	Support for multi-node Raspberry Pi clusters
+## Future Improvements
 
-⸻
+- Convert tasks into reusable Ansible roles
+- Add MetalLB for LoadBalancer services
+- Add Ingress (Traefik or NGINX)
+- Optional GitOps tooling (Argo CD / Flux)
+- Support for multi-node Raspberry Pi clusters
 
-License
+---
+
+## License
 
 MIT
