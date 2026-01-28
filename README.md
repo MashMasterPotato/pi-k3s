@@ -13,7 +13,7 @@ The goal is a setup that is **simple, reproducible, and easy to reason about**, 
 ---
 
 ## Architecture
-
+```text
 Raspberry Pi Imager  
 ↓  
 Basic OS + SSH access  
@@ -27,7 +27,7 @@ Ansible
 - OS preparation  
 - k3s installation  
 - Kubernetes ready  
-
+```
 OpenTofu is intentionally **not** used for OS configuration.  
 Its role is **coordination**, not configuration management.
 
@@ -49,7 +49,7 @@ Its role is **coordination**, not configuration management.
 │   └── roles/               # optional, grows over time
 │
 └── README.md
-
+```
 ---
 
 ## Prerequisites
